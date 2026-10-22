@@ -25,6 +25,8 @@ const assets = new Map([
 ]);
 
 for (const file of ['core.js', 'cache.js', 'network.js', 'broker.js', 'setup.js', 'setup.html', 'manifest.json']) assets.set(`/p2p/${file}`, [`p2p/${file}`, file.endsWith('.html') ? 'text/html; charset=utf-8' : file.endsWith('.json') ? 'application/json' : 'text/javascript; charset=utf-8']);
+for (const file of ['index.html', 'player.js', 'worker.js']) assets.set(`/stream/peer/${file}`, [`stream/peer/${file}`, file.endsWith('.html') ? 'text/html; charset=utf-8' : 'text/javascript; charset=utf-8']);
+assets.set('/stream/peer/', ['stream/peer/index.html', 'text/html; charset=utf-8']);
 // Node 24 has WebCrypto globally; this fallback only supports older compatible Node.
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
 const coordinator = process.argv.includes('--p2p') ? createCoordinator({ origin: 'http://127.0.0.1:4173', getManifest: async () => PeerCore.validateManifest(JSON.parse(await readFile(new URL('./p2p/manifest.json', import.meta.url), 'utf8'))) }) : null;
