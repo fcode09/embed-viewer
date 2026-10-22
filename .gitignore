@@ -1,0 +1,9 @@
+# Machine-specific tooling and local credentials.
+/.atl/
+.env
+.env.*
+!.env.example
+*.log
+
+# The video remains on Drive; only its public hash manifest is versioned.
+*.mp4
