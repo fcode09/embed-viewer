@@ -46,6 +46,41 @@ instead of SCSS to avoid adding a compiler for this small static page.
 
 Run node --check app.js, node --check serve.mjs, and node --test tests/app.test.cjs.
 
+### Anonymous Drive API experiment
+
+The working iframe remains the default. A separate developer diagnostic is
+available at <http://127.0.0.1:4173/drive-api-check.html> after `node serve.mjs`.
+
+1. Select or create your Google Cloud project and enable **Google Drive API**.
+2. Create a **standard API key**, without service-account binding. Restrict its
+   API access to Google Drive API and its website referrer to
+   `http://127.0.0.1:4173/*`. Do not remove restrictions to work around an error.
+3. Confirm the file is already publicly shared. Paste the restricted key into
+   the diagnostic page, not source code or chat, and click **Test 1 KB access**.
+
+The key is cleared from the input on submission and not persisted by the app.
+It is sent to Google in `X-Goog-Api-Key`, not the URL. Browser developer tools
+can still inspect it. Do not use an owner token, refresh token, or private key.
+If Google asks to enable billing, stop before accepting it; this experiment
+does not require us to provision paid services automatically.
+
+The diagnostic requests `files.get?alt=media` with `Range: bytes=0-1023`,
+rejects non-206/non-MP4 responses before reading their bodies, and checks the
+fragment length and MP4 signature. It has a 12-second timeout. If a server
+ignores Range, the body is cancelled, although already in-flight network bytes
+cannot be recalled. A successful fragment is not proof of full playback or
+seeking; those remain the next gate. No key-backed live result has been
+verified yet. Neither page creates a media proxy or changes file permissions.
+
+To roll back only this experiment, remove `drive-api-check.html`,
+`drive-api-check.js`, and `tests/drive-api-check.test.cjs`, remove their two
+allowlisted routes from `serve.mjs`, and remove this diagnostic documentation.
+Keep the existing viewer and its styles unchanged.
+
+Setup references: [enable the API](https://developers.google.com/workspace/guides/enable-apis),
+[create credentials](https://developers.google.com/workspace/guides/create-credentials#api-key),
+and [restrict keys](https://docs.cloud.google.com/api-keys/docs/add-restrictions-api-keys).
+
 For a browser check, confirm there are no Drive requests before Load video; test load, reload, close, cinema mode, fullscreen, and a narrow mobile viewport. Actual Drive playback depends on Google and the browser.
 
 Rollback boundary: remove the original viewer assets, static server and viewer tests, and restore the initial README. Remove later experiments first if they depend on these assets. No dependencies or Git settings change.

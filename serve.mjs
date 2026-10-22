@@ -7,6 +7,8 @@ const assets = new Map([
   ['/index.html', ['index.html', 'text/html; charset=utf-8']],
   ['/styles.css', ['styles.css', 'text/css; charset=utf-8']],
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
+  ['/drive-api-check.html', ['drive-api-check.html', 'text/html; charset=utf-8']],
+  ['/drive-api-check.js', ['drive-api-check.js', 'text/javascript; charset=utf-8']],
 ]);
 
 

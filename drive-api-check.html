@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Drive API — bounded access check</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="drive-api-check.js" defer></script>
+  <style>
+    main { max-width: 700px; padding-block: 48px; }
+    h1 { font-size: clamp(32px, 6vw, 48px); letter-spacing: -1.5px; }
+    p, li { color: var(--muted); font-size: 14px; line-height: 1.8; }
+    form { margin-block: 28px; }
+    label { display: block; margin-bottom: 10px; }
+    input { display: block; width: 100%; padding: 14px; margin-bottom: 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text); font: inherit; }
+    input:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+    button:disabled { opacity: .6; cursor: wait; }
+    #result { padding: 18px; border: 1px solid var(--line); border-radius: 6px; white-space: pre-line; }
+    code { overflow-wrap: anywhere; color: var(--text); }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="index.html">← Back to the viewer</a>
+    <p class="eyebrow">DEVELOPER CHECK / NO SIGN-IN</p>
+    <h1>Can the browser read the video?</h1>
+    <p>This diagnostic requests only bytes 0–1023 of the supplied public Drive video. It does not download the complete file, request OAuth access, or send video through the preview server.</p>
+    <ol>
+      <li>In your Google Cloud project, enable <strong>Google Drive API</strong>.</li>
+      <li>Create a <strong>standard API key</strong>, not a service-account authorization key.</li>
+      <li>Restrict it to <strong>Google Drive API</strong> and the website <code>http://127.0.0.1:4173/*</code>.</li>
+      <li>Run <code>node serve.mjs</code> and open this page at <code>http://127.0.0.1:4173/drive-api-check.html</code>.</li>
+    </ol>
+    <p>The video must already be shared with anyone who has the link. Do not paste an OAuth token, private key, or client secret here. If Google asks to enable billing, stop and review it before proceeding.</p>
+    <form id="api-form">
+      <label for="api-key">Restricted Google Drive API key</label>
+      <input id="api-key" type="password" autocomplete="off" spellcheck="false" required aria-describedby="key-help">
+      <p id="key-help">Used only in memory for this request, sent directly to Google in a header, and cleared from this input when submitted. Not saved to local storage or project files. Browser developer tools can still inspect requests.</p>
+      <button class="load-button" id="check" type="submit">Test 1 KB access</button>
+    </form>
+    <p id="result" role="status" aria-live="polite">Not tested. The existing Drive viewer is unchanged.</p>
+    <p>A successful check proves access to this fragment only. Playback, seeking, quotas, and browser compatibility still need verification before replacing the working iframe.</p>
+  </main>
+</body>
+</html>
