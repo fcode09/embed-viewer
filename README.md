@@ -274,6 +274,14 @@ Open http://127.0.0.1:4173/p2p/setup.html, enter a restricted standard key local
 
 Run node --test tests/peer-core.test.cjs. Preparing a seed consumes browser storage and connection bandwidth; a bundled manifest does not populate a browser cache or remove the need for a key on missing Drive blocks. Rollback: remove the p2p core/cache/setup assets, manifest, their static routes and this section; keep prior players.
 
+## Local peer transport and coordinator
+
+Run node serve.mjs --p2p to enable optional loopback-only anonymous JSON/SSE signalling. PeerNetwork, PeerBroker and the coordinator provide cache-first, verified peer-block exchange with direct Drive fallback. The integrated peer-player page is added in the next unit; previous players remain unchanged.
+
+Sharing requires consent from its caller and one sharing owner per profile through Web Locks. No external STUN/TURN is configured; no video is relayed through Node. Each sender serves cached verified blocks only. Useful upload pacing defaults to 4 MiB/s, configurable through uploadBytesPerSecond between 0.5 and 8 MiB/s, with one upload and 200 MiB per session. Protocol overhead is additional. This does not establish production fluidity or internet connectivity.
+
+Run node --test tests/peer-network.test.cjs tests/peer-broker.test.cjs tests/peer-coordinator.test.cjs. Omit --p2p to disable signalling. Rollback: remove transport/coordinator assets and tests, their routes/imports and this section; preserve cache/operator preparation and previous players.
+
 For a browser check, confirm there are no Drive requests before Load video; test load, reload, close, cinema mode, fullscreen, and a narrow mobile viewport. Actual Drive playback depends on Google and the browser.
 
 Rollback boundary: remove the original viewer assets, static server and viewer tests, and restore the initial README. Remove later experiments first if they depend on these assets. No dependencies or Git settings change.
