@@ -81,6 +81,47 @@ Setup references: [enable the API](https://developers.google.com/workspace/guide
 [create credentials](https://developers.google.com/workspace/guides/create-credentials#api-key),
 and [restrict keys](https://docs.cloud.google.com/api-keys/docs/add-restrictions-api-keys).
 
+### Next gate: native playback of a full browser-local copy
+
+After a successful fragment check, visit
+<http://127.0.0.1:4173/drive-player.html>. Enter the restricted standard key
+locally again, explicitly consent to the approximately **162 MB** full download,
+and click **Download & prepare video**. This transfer consumes viewer data and
+temporary browser resources. It does not start automatically and can be
+cancelled. There is a 200 MiB safety cap and a 30-second no-data timeout.
+
+The key stays out of the URL, application storage, and source files. The
+browser fetches directly from Google using `X-Goog-Api-Key`; after completion,
+a temporary Blob URL feeds our own `<video>`. Custom controls cover play/pause,
+seek, ±10 seconds, volume/mute, speed, fullscreen (when available), and cinema
+mode. Native controls remain until metadata is valid. The page reports actual
+playback advancement and position changes separately. Close releases the Blob
+URL; leaving the page aborts a pending download. No permanent cache is created.
+
+**This is not progressive streaming.** Local seeking does not prove remote
+seeking. The fragment screenshot supplied by the user proves API byte access,
+not this full playback path; live playback still requires the user's local key
+and confirmation. A production page must separately configure a restricted
+application key so visitors do not enter one. No real key has been requested
+in chat, embedded in source, or recovered from an existing browser session.
+
+This deliberately avoids exposing the key in a `<video src>` query string,
+adding a media proxy, installing a demuxer, or registering a Service Worker.
+The original iframe remains available at `index.html` as an explicit fallback.
+The tradeoff is waiting for the complete file and using temporary resources.
+
+Verify with `node --check drive-download.js`, `node --check drive-player.js`,
+and `node --test tests/drive-download.test.cjs`. Browser tests must distinguish
+synthetic fixtures from actual user-key-backed Drive playback. For the real
+test, confirm the timer advances while playing, pause, seek to the middle,
+change volume and speed, then close and confirm the player is unloaded.
+
+To remove only this playback experiment, delete `drive-player.html`,
+`drive-player.css`, `drive-player.js`, `drive-download.js`, and
+`tests/drive-download.test.cjs`, remove their four routes from `serve.mjs`,
+and remove its link from the diagnostic and this documentation. Keep the
+existing viewer and fragment diagnostic.
+
 For a browser check, confirm there are no Drive requests before Load video; test load, reload, close, cinema mode, fullscreen, and a narrow mobile viewport. Actual Drive playback depends on Google and the browser.
 
 Rollback boundary: remove the original viewer assets, static server and viewer tests, and restore the initial README. Remove later experiments first if they depend on these assets. No dependencies or Git settings change.

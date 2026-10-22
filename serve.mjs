@@ -9,6 +9,11 @@ const assets = new Map([
   ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
   ['/drive-api-check.html', ['drive-api-check.html', 'text/html; charset=utf-8']],
   ['/drive-api-check.js', ['drive-api-check.js', 'text/javascript; charset=utf-8']],
+  ['/drive-player.html', ['drive-player.html', 'text/html; charset=utf-8']],
+  ['/drive-player.css', ['drive-player.css', 'text/css; charset=utf-8']],
+  ['/drive-download.js', ['drive-download.js', 'text/javascript; charset=utf-8']],
+  ['/drive-player.js', ['drive-player.js', 'text/javascript; charset=utf-8']],
+  ['/media-controls.js', ['media-controls.js', 'text/javascript; charset=utf-8']],
 ]);
 
 
