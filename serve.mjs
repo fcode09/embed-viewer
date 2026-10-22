@@ -21,6 +21,7 @@ const assets = new Map([
   ['/stream/bridge.js', ['stream/bridge.js', 'text/javascript; charset=utf-8']],
 ]);
 
+for (const file of ['core.js', 'cache.js', 'setup.js', 'setup.html', 'manifest.json']) assets.set(`/p2p/${file}`, [`p2p/${file}`, file.endsWith('.html') ? 'text/html; charset=utf-8' : file.endsWith('.json') ? 'application/json' : 'text/javascript; charset=utf-8']);
 
 const server = createServer(async (request, response) => {
   const path = (request.url ?? '/').split('?')[0];
@@ -34,7 +35,7 @@ const server = createServer(async (request, response) => {
     response.writeHead(200, { 'Content-Type': asset[1], 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
     response.end(request.method === 'HEAD' ? undefined : content);
   } catch (error) {
-    response.writeHead(error.code === 'ENOENT' ? 404 : 500).end(error.code === 'ENOENT' ? 'Not found' : 'Unable to read preview asset');
+    response.writeHead(error.code === 'ENOENT' ? 404 : 500).end(error.code === 'ENOENT' ? 'Not found. Operator: publish p2p/manifest.json from /p2p/setup.html first.' : 'Unable to read preview asset');
   }
 });
 

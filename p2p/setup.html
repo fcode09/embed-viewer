@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Drive publisher preparation — Embed Lab</title>
+  <link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../drive-player.css">
+  <script src="core.js" defer></script><script src="cache.js" defer></script><script src="setup.js" defer></script>
+</head>
+<body><main>
+  <a href="../stream/">← Progressive Drive player</a>
+  <p class="eyebrow">OPERATOR SETUP / REAL DRIVE SOURCE</p>
+  <h1>Prepare once.<br>Share <em>verified bytes.</em></h1>
+  <p class="description">The real MP4 remains on Google Drive. This page reads it directly into your browser, calculates block hashes, and exports only a small JSON manifest. It never uploads the video to the local server.</p>
+  <form id="publisher-form" class="setup">
+    <label for="publisher-key">Restricted standard Drive API key</label>
+    <input id="publisher-key" type="password" autocomplete="off" spellcheck="false" required style="display:block;width:100%;padding:12px;margin-top:10px;background:var(--bg);color:var(--text);border:1px solid var(--line)">
+    <label class="consent"><input id="publisher-consent" type="checkbox" required> Read the entire real Drive video once (about 162 MB), use my data and up to 200 MiB of browser storage, and generate a trusted manifest.</label>
+    <button id="publisher-start" class="load-button" type="submit">Read Drive &amp; prepare manifest</button>
+    <button id="publisher-cancel" type="button" hidden>Cancel</button>
+    <progress id="publisher-progress" max="1" value="0" hidden aria-label="Source preparation progress"></progress>
+  </form>
+  <p id="publisher-status" role="status" aria-live="polite">No download started. No key is stored or sent to the coordinator.</p>
+  <a id="publisher-export" download="manifest.json" hidden>Download verified manifest.json</a>
+  <p class="description">After preparation, save the JSON as <code>p2p/manifest.json</code> in this project. Only the operator performs this publication. Do not paste an API key into that file. Then return to the player in this same browser profile to seed its verified cached blocks.</p>
+  <p class="description">The source identity, size, MIME type, and Drive version must match before and after the read. Cancelled or changed-source preparations are not publishable. The original iframe viewer remains available.</p>
+</main></body></html>

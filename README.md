@@ -266,6 +266,14 @@ the worker whose scope is `/stream/`, remove the `stream/` files and their
 static routes and diagnostic link, and remove the two stream test files.
 Keep `media-controls.js` and its route/script reference: the full-download
 prototype now uses that shared controller. Do not unregister unrelated workers.
+## Verified browser cache and operator preparation
+
+A validated p2p/manifest.json for the current public Drive video is included. It contains metadata and SHA-256 hashes, not the key or video. Regenerate it if Drive changes.
+
+Open http://127.0.0.1:4173/p2p/setup.html, enter a restricted standard key locally, and consent to reading the real approximately 162 MB source once. Complete 1 MiB blocks are stored in IndexedDB under a 200 MiB payload cap; the source version is checked before and after. Download the manifest JSON and deliberately replace p2p/manifest.json only when updating the source. Never publish a key or MP4. Existing valid cached blocks survive a repeated preparation failure.
+
+Run node --test tests/peer-core.test.cjs. Preparing a seed consumes browser storage and connection bandwidth; a bundled manifest does not populate a browser cache or remove the need for a key on missing Drive blocks. Rollback: remove the p2p core/cache/setup assets, manifest, their static routes and this section; keep prior players.
+
 For a browser check, confirm there are no Drive requests before Load video; test load, reload, close, cinema mode, fullscreen, and a narrow mobile viewport. Actual Drive playback depends on Google and the browser.
 
 Rollback boundary: remove the original viewer assets, static server and viewer tests, and restore the initial README. Remove later experiments first if they depend on these assets. No dependencies or Git settings change.
