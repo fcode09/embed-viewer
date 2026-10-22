@@ -14,6 +14,11 @@ const assets = new Map([
   ['/drive-download.js', ['drive-download.js', 'text/javascript; charset=utf-8']],
   ['/drive-player.js', ['drive-player.js', 'text/javascript; charset=utf-8']],
   ['/media-controls.js', ['media-controls.js', 'text/javascript; charset=utf-8']],
+  ['/stream/', ['stream/index.html', 'text/html; charset=utf-8']],
+  ['/stream/index.html', ['stream/index.html', 'text/html; charset=utf-8']],
+  ['/stream/player.js', ['stream/player.js', 'text/javascript; charset=utf-8']],
+  ['/stream/worker.js', ['stream/worker.js', 'text/javascript; charset=utf-8']],
+  ['/stream/bridge.js', ['stream/bridge.js', 'text/javascript; charset=utf-8']],
 ]);
 
 

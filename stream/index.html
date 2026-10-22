@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Embed Lab — Progressive Drive playback</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../drive-player.css">
+  <script src="../media-controls.js" defer></script>
+  <script src="player.js" defer></script>
+</head>
+<body>
+  <main>
+    <a href="../index.html">← Original Drive viewer</a>
+    <p class="eyebrow">EXPERIMENT 003 / PROGRESSIVE PLAYBACK</p>
+    <h1>Press play.<br>Keep <em>streaming.</em></h1>
+    <p class="description">Drive → your browser · No media proxy · No visitor Google sign-in</p>
+    <form id="stream-form" class="setup">
+      <label for="stream-key">Restricted Google Drive API key</label>
+      <input id="stream-key" type="password" autocomplete="off" spellcheck="false" required aria-describedby="stream-key-help" style="width:100%;padding:12px;margin-top:10px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:5px">
+      <p id="stream-key-help">Developer test: enter the same standard key restricted to Drive API and this website. It stays in this tab's memory until you close the stream or leave. Never enter an owner token, client secret, or private key. Browser developer tools can inspect requests.</p>
+      <button id="prepare-stream" class="load-button" type="submit">Prepare streaming</button>
+      <p>No requests to Google until you prepare a session. This registers a Service Worker only for /stream/, checks a 1 KB fragment, and lets the browser request media ranges. No full-file Blob or permanent video cache is created.</p>
+      <p>Your project's API quotas still apply. No billing or quota settings are changed. Browser buffering and repeated seeks can transfer extra bytes; streaming is not a guarantee of zero cost or minimum traffic.</p>
+    </form>
+    <p id="playback-status" role="status" aria-live="polite">Ready for a streaming test. No playback has been verified in this session.</p>
+    <details open>
+      <summary>Streaming diagnostics — no keys</summary>
+      <p>Share these lines if playback fails. They contain only stages, status codes, and selected media metadata, not the API key. Console entries use the prefix [Drive stream].</p>
+      <pre id="stream-diagnostics" role="log" aria-live="polite" style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px">No diagnostic events yet.</pre>
+    </details>
+    <section aria-labelledby="player-title">
+      <h2 id="player-title">Progressive viewing room</h2>
+      <div class="player-shell" id="native-shell">
+        <div class="stage"><video id="native-video" controls playsinline preload="none" aria-label="SIPCOP monitoring video"></video></div>
+        <fieldset id="custom-controls" class="native-controls" disabled hidden aria-label="Video playback controls">
+          <div class="timeline">
+            <label class="visually-hidden" for="seek">Playback position</label>
+            <input id="seek" type="range" min="0" max="0" step="0.1" value="0" aria-valuetext="0:00">
+            <output id="time" for="seek">0:00 / 0:00</output>
+          </div>
+          <div class="control-row">
+            <button id="play-pause" type="button">Play</button>
+            <button id="back-ten" type="button" aria-label="Back 10 seconds">−10s</button>
+            <button id="forward-ten" type="button" aria-label="Forward 10 seconds">+10s</button>
+            <button id="mute" type="button" aria-pressed="false">Mute</button>
+            <label for="volume">Volume <input id="volume" type="range" min="0" max="1" step="0.05" value="1"></label>
+            <label for="speed">Speed <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+            <button id="native-fullscreen" type="button" hidden>Fullscreen</button>
+          </div>
+        </fieldset>
+      </div>
+      <div class="view-actions">
+        <button id="native-cinema" type="button" aria-pressed="false">Cinema mode</button>
+        <button id="stop-stream" type="button" hidden>Close stream &amp; clear key</button>
+        <a href="../index.html">Use original Drive viewer</a>
+      </div>
+      <p id="stream-stats">No media transferred.</p>
+      <p id="playback-proof">Playback and seeking have not been verified.</p>
+    </section>
+    <details><summary>Privacy, compatibility, and fallback</summary><p>Requires a Service Worker-capable browser and a secure context (HTTPS in production or the local preview). The worker handles only this page's fixed virtual media URL. It forwards range requests directly to Google using X-Goog-Api-Key and streams their responses without waiting for the complete file.</p><p>The worker registration may remain installed, but it stores no key or media permanently and controls only /stream/. A restarted worker requests the key again from the same open tab. Closing the stream removes that tab's key and cancels its transfers. It does not cancel other tabs.</p><p>If CORS hides Content-Range, the worker makes one small metadata request to verify the file size, then constructs local range headers from that size, the requested range, HTTP 206, and Content-Length. Only the size is retained in session memory; the file must remain unchanged during playback. Invalid or contradictory responses still stop the session. Full download never starts automatically. <a href="../drive-player.html">The separate full-download test</a> remains opt-in. Production key configuration is not part of this developer experiment.</p></details>
+    <noscript><p>JavaScript is required. <a href="../index.html">Use the original viewer.</a></p></noscript>
+  </main>
+</body>
+</html>
