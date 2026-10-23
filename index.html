@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+    content="A lightweight Google Drive video viewing experiment. No frameworks, no autoplay, no unnecessary downloads.">
+  <title>Embed Lab — Drive video preview</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="./" aria-label="Embed Lab home"><span class="brand-icon" aria-hidden="true">↗</span>
+      embed<span class="muted">/lab</span></a>
+    <span class="build-label">HTML / CSS / JS <span class="status-dot" aria-hidden="true"></span></span>
+  </header>
+
+  <main id="main">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">EXPERIMENT 001 <span>—</span> GOOGLE DRIVE</p>
+        <h1 id="page-title">Your video.<br>A better <em>frame.</em></h1>
+        <p class="intro-copy">A distraction-free space for your Drive video.<br>Lightweight by design. Honest about its
+          limits.</p>
+      </div>
+      <aside class="source-card" aria-label="Video source">
+        <span class="eyebrow">CONNECTED SOURCE</span>
+        <p><span class="file-icon" aria-hidden="true">▶</span> Google Drive <span class="file-type">MP4</span></p>
+        <span class="source-name">E. Monitoreo de SIPCOP Parte 4</span>
+        <a href="https://drive.google.com/file/d/1-XFihL-VwXZK1J7o81nQwm5WuJyYExP9/view" target="_blank"
+          rel="noopener noreferrer">View original <span aria-hidden="true">↗</span></a>
+      </aside>
+    </section>
+
+    <section class="viewer" aria-labelledby="video-title">
+      <div class="section-heading">
+        <h2 id="video-title">The viewing room</h2><span>01 / DRIVE PREVIEW</span>
+      </div>
+      <div class="player-shell" id="player-shell">
+        <div class="stage" id="stage" aria-label="Video player">
+          <div class="cover" id="cover">
+            <div class="orbit orbit-one" aria-hidden="true"></div>
+            <div class="orbit orbit-two" aria-hidden="true"></div>
+            <span class="cover-tag">SIPCOP / SESSION 04</span>
+            <div class="cover-content">
+              <span class="eyebrow">MAKE ROOM FOR THE VIDEO</span>
+              <h3>Less interface.<br>More focus.</h3>
+              <button class="load-button" id="load" type="button"><span aria-hidden="true">▶</span> Load video <span
+                  class="button-arrow" aria-hidden="true">↗</span></button>
+              <p>Connects to Google only when you choose.</p>
+            </div>
+            <span class="cover-bottom">ON-DEMAND LOADING <span>GOOGLE DRIVE PLAYER</span></span>
+          </div>
+        </div>
+        <div class="toolbar" aria-label="Viewing controls">
+          <span class="player-label"><span class="status-dot" aria-hidden="true"></span> Drive embed <span
+              class="toolbar-divider">/</span> Original controls</span>
+          <div class="actions">
+            <button id="theater" type="button" aria-pressed="false">Cinema mode</button>
+            <button id="fullscreen" type="button" hidden>Fullscreen <span aria-hidden="true">⛶</span></button>
+            <button id="reload" type="button" hidden>Reload</button>
+            <button id="close" type="button" hidden>Close player</button>
+          </div>
+        </div>
+      </div>
+      <div class="player-note">
+        <p id="status" role="status" aria-live="polite">Ready when you are. Load the video, then press Play in the Drive
+          player.</p><span>NO AUTOPLAY</span>
+      </div>
+      <noscript>
+        <p>JavaScript is needed to load this on-demand player. <a
+            href="https://drive.google.com/file/d/1-XFihL-VwXZK1J7o81nQwm5WuJyYExP9/view">Watch the video on Google
+            Drive instead.</a></p>
+      </noscript>
+    </section>
+
+    <section class="notes" aria-label="Integration details">
+      <article><span class="note-number">01 / PERFORMANCE</span>
+        <h3>Only load what matters.</h3>
+        <p>No player requests before you click. No frameworks, external fonts, or thumbnail downloads. Close the player
+          to unload it.</p>
+      </article>
+      <article><span class="note-number">02 / CONTROL</span>
+        <h3>Our frame. Drive's player.</h3>
+        <p>Cinema mode and fullscreen belong to this page. Play, volume, seeking, and available playback settings stay
+          inside Drive.</p>
+      </article>
+      <article><span class="note-number">03 / THE NEXT STEP</span>
+        <h3>Want your own controls?</h3>
+        <p>A directly hosted video with HTML5 &lt;video&gt; unlocks custom playback controls. This Drive preview does
+          not expose that control here.</p>
+      </article>
+    </section>
+    <details class="troubleshooting">
+      <summary>Video not playing?</summary>
+      <p>The file must be shared with your viewers. Google notes that Drive playback may need third-party cookies. This
+        page cannot detect playback or permission errors inside Google's frame. Try “Reload” or open the original using
+        the source link above.</p>
+    </details>
+  </main>
+  <footer><span>embed/lab <span class="muted">— A small experiment in better viewing.</span></span><span>BUILDLESS.
+      PURPOSEFUL.</span></footer>
+</body>
+
+</html>

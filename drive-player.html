@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="An opt-in browser-local playback experiment for a public Google Drive video.">
+  <title>Embed Lab — Native playback test</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="drive-player.css">
+  <script src="drive-download.js" defer></script>
+  <script src="media-controls.js" defer></script>
+  <script src="drive-player.js" defer></script>
+</head>
+<body>
+  <main>
+    <a href="index.html">← Original Drive viewer</a>
+    <p class="eyebrow">EXPERIMENT 002 / BROWSER-LOCAL PLAYBACK</p>
+    <h1>Your video.<br>Your <em>controls.</em></h1>
+    <p class="description">E. Monitoreo de SIPCOP Parte 4 · No visitor Google sign-in · No media proxy</p>
+    <form id="download-form" class="setup">
+      <label for="player-key">Restricted Google Drive API key</label>
+      <input id="player-key" type="password" autocomplete="off" spellcheck="false" required aria-describedby="key-info">
+      <p id="key-info">Developer test: the key stays in memory and is sent only to Google in a header. It is not saved in files or browser storage. Keep the website and Drive API restrictions enabled.</p>
+      <label class="consent"><input id="download-consent" type="checkbox" required> I agree to download the full video (about 162 MB) into this browser before playback. This uses my data and temporary storage/memory.</label>
+      <div class="download-actions">
+        <button class="load-button" id="prepare" type="submit">Download &amp; prepare video</button>
+        <button id="cancel-download" type="button" hidden>Cancel download</button>
+      </div>
+      <progress id="download-progress" max="1" value="0" hidden aria-label="Video download progress"></progress>
+      <p id="download-size">No download started. Safety limit: 200 MiB. No automatic playback.</p>
+    </form>
+    <section aria-labelledby="player-title">
+      <h2 id="player-title">Native viewing room</h2>
+      <div class="player-shell" id="native-shell">
+        <div class="stage"><video id="native-video" controls playsinline preload="none" aria-label="SIPCOP monitoring video"></video></div>
+        <fieldset id="custom-controls" class="native-controls" disabled hidden aria-label="Video playback controls">
+          <div class="timeline">
+            <label class="visually-hidden" for="seek">Playback position</label>
+            <input id="seek" type="range" min="0" max="0" step="0.1" value="0" aria-valuetext="0:00">
+            <output id="time" for="seek">0:00 / 0:00</output>
+          </div>
+          <div class="control-row">
+            <button id="play-pause" type="button">Play</button>
+            <button id="back-ten" type="button" aria-label="Back 10 seconds">−10s</button>
+            <button id="forward-ten" type="button" aria-label="Forward 10 seconds">+10s</button>
+            <button id="mute" type="button" aria-pressed="false">Mute</button>
+            <label class="volume-label" for="volume">Volume <input id="volume" type="range" min="0" max="1" step="0.05" value="1"></label>
+            <label for="speed">Speed <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+            <button id="native-fullscreen" type="button" hidden>Fullscreen</button>
+          </div>
+        </fieldset>
+      </div>
+      <div class="view-actions">
+        <button id="native-cinema" type="button" aria-pressed="false">Cinema mode</button>
+        <button id="release-video" type="button" hidden>Close &amp; release video</button>
+        <a href="index.html">Use the original Drive viewer</a>
+      </div>
+      <p id="playback-status" role="status" aria-live="polite">Ready for a developer test. Enter the key and confirm the download above.</p>
+      <p id="playback-proof">Playback and seeking have not been verified for this session.</p>
+    </section>
+    <details><summary>What this test does — and does not prove</summary><p>The complete file is fetched directly from Google, then played from a temporary Blob URL. This is not progressive streaming, persistent caching, or an offline feature. Seeking tests the downloaded copy, not remote byte-range seeking. Browser developer tools can inspect API requests. A production site must configure a restricted application key so visitors do not need to enter one; this developer test intentionally does not store it.</p><p>Native controls remain available until metadata loads and our custom controls are ready. No captions are invented: a real caption track would need to be supplied separately. <a href="drive-api-check.html">Run the 1 KB access check instead</a>.</p></details>
+    <noscript><p>JavaScript is required for this test. <a href="index.html">Use the original viewer.</a></p></noscript>
+  </main>
+</body>
+</html>

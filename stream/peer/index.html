@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Embed Lab — Local cache and peer playback</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../drive-player.css">
+  <script src="../../media-controls.js" defer></script>
+  <script src="../../p2p/core.js" defer></script>
+  <script src="../../p2p/cache.js" defer></script>
+  <script src="../bridge.js" defer></script>
+  <script src="../../p2p/network.js" defer></script>
+  <script src="../../p2p/broker.js" defer></script>
+  <script src="player.js" defer></script>
+</head>
+<body>
+  <main>
+    <a href="../../index.html">← Original Drive viewer</a>
+    <p class="eyebrow">EXPERIMENT 004 / LOCAL PEER PILOT</p>
+    <h1>Keep the video.<br>Share <em>only if you choose.</em></h1>
+    <p class="description">Local cache → consenting local peer → Drive · No video on the coordinator</p>
+    <form id="stream-form" class="setup">
+      <label for="stream-key">Restricted Google Drive API key (optional for cache/peers)</label>
+      <input id="stream-key" type="password" autocomplete="off" spellcheck="false" aria-describedby="stream-key-help" style="width:100%;padding:12px;margin-top:10px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:5px">
+      <p id="stream-key-help">Only needed for blocks missing from cache and peers. Header-only to Google, kept in this tab's memory, cleared on close. Never enter OAuth tokens or private keys.</p>
+      <p>This pilot saves verified video blocks in this browser (up to 200 MiB). Browser storage may be evicted and is not a permanent backup. No Google request starts until you prepare. <a href="../../p2p/setup.html">Operator: prepare the trusted manifest first</a>.</p>
+      <button id="prepare-stream" class="load-button" type="submit">Prepare cached streaming</button>
+    </form>
+    <p id="playback-status" role="status" aria-live="polite">Ready for a streaming test. No playback has been verified in this session.</p>
+    <section class="setup" aria-label="Optional peer sharing">
+      <label><input id="peer-consent" type="checkbox"> I agree to exchange verified video blocks with local test peers. This uses my connection's DOWNLOAD and UPLOAD bandwidth, battery, and browser storage. Connected peers may learn my network/IP information. Sharing requires this tab to stay open.</label>
+      <p>Sharing is OFF by default. Useful upload payload: at most your selected speed, 200 MiB per session, one upload at a time. Protocol overhead is additional. No external STUN or TURN. Use separate browser profiles on this computer; other devices cannot reach the loopback coordinator.</p>
+      <label for="peer-upload-limit">Upload limit (MiB/s)
+        <input id="peer-upload-limit" type="number" min="0.5" max="8" step="0.5" value="4" required aria-describedby="peer-upload-help">
+      </label>
+      <p id="peer-upload-help">Local test default: 4 MiB/s (about 34 Mbps, plus overhead). Choose 0.5–8 MiB/s before enabling sharing. This is an upper limit, not guaranteed throughput. Disable sharing to change it; reload resets it to 4. Production requires measurement of sender upload capacity and video bitrate.</p>
+      <button id="peer-toggle" type="button" disabled>Enable peer sharing</button>
+      <button id="cache-delete" type="button">Delete cached video</button>
+      <p id="peer-status" role="status">Sharing is off.</p>
+      <p id="cache-status" role="status">Local cache not inspected yet.</p>
+    </section>
+    <section aria-labelledby="player-title">
+      <h2 id="player-title">Progressive viewing room</h2>
+      <div class="player-shell" id="native-shell">
+        <div class="stage"><video id="native-video" controls playsinline preload="none" aria-label="SIPCOP monitoring video"></video></div>
+        <fieldset id="custom-controls" class="native-controls" disabled hidden aria-label="Video playback controls">
+          <div class="timeline">
+            <label class="visually-hidden" for="seek">Playback position</label>
+            <input id="seek" type="range" min="0" max="0" step="0.1" value="0" aria-valuetext="0:00">
+            <output id="time" for="seek">0:00 / 0:00</output>
+          </div>
+          <div class="control-row">
+            <button id="play-pause" type="button">Play</button>
+            <button id="back-ten" type="button" aria-label="Back 10 seconds">−10s</button>
+            <button id="forward-ten" type="button" aria-label="Forward 10 seconds">+10s</button>
+            <button id="mute" type="button" aria-pressed="false">Mute</button>
+            <label for="volume">Volume <input id="volume" type="range" min="0" max="1" step="0.05" value="1"></label>
+            <label for="speed">Speed <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+            <button id="native-fullscreen" type="button" hidden>Fullscreen</button>
+          </div>
+        </fieldset>
+      </div>
+      <div class="view-actions">
+        <button id="native-cinema" type="button" aria-pressed="false">Cinema mode</button>
+        <button id="load-video" type="button" hidden>Load video</button>
+        <button id="stop-stream" type="button" hidden>Close stream &amp; clear key</button>
+        <a href="../../index.html">Use original Drive viewer</a>
+      </div>
+      <p id="stream-stats">No media transferred.</p>
+      <p id="playback-proof">Playback and seeking have not been verified.</p>
+    </section>
+    <details><summary>How this pilot works</summary><p>The server publishes static files and a trusted JSON hash manifest, and coordinates anonymous peers. It never downloads, stores, or relays the MP4. Video bytes travel from Drive or another browser to this browser. A Service Worker scoped to /stream/peer/ serves verified 1 MiB blocks to the native player, without waiting for a complete video download. Missing peer blocks fall back to Drive; a key is required for that fallback.</p><p>All source blocks must match the operator-published SHA-256 hashes. The operator must regenerate the manifest if Drive changes. No independent whole-file preload runs. The native browser still decides how much media to buffer and may request many blocks. Statistics count complete useful blocks, excluding protocol overhead, aborted traffic, and signalling. Playback controls and buffering remain browser-dependent.</p><p>Closing stops this tab's transfers/sharing and clears its key, but keeps saved blocks. Reloading reuses this origin/profile's saved blocks. Separate profiles have separate caches. Clearing removes this origin's pilot video cache only; another open tab may write again.</p></details>
+    <noscript><p>JavaScript is required. <a href="../../index.html">Use the original viewer.</a></p></noscript>
+  </main>
+</body>
+</html>
